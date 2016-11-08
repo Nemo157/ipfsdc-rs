@@ -1,9 +1,6 @@
 use std::fmt::Debug;
-use std::str::FromStr;
 
 use futures::{ self, Future };
-use mhash::MultiHash;
-use maddr::MultiAddr;
 use tokio_core::reactor::Core;
 
 pub fn run_all<F, I>(event_loop: &mut Core, futures: I)
@@ -21,16 +18,4 @@ pub fn run_all<F, I>(event_loop: &mut Core, futures: I)
             }
         };
     }
-}
-
-pub fn multiaddr_validator(s: String) -> Result<(), String> {
-    MultiAddr::from_str(&*s)
-        .map(|_| ())
-        .map_err(|e| format!("Failed to parse multiaddr {:?}: {}", s, e))
-}
-
-pub fn multihash_validator(s: String) -> Result<(), String> {
-    MultiHash::from_str(&*s)
-        .map(|_| ())
-        .map_err(|e| format!("Failed to parse multihash {:?}: {}", s, e))
 }

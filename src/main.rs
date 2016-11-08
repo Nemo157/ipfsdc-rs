@@ -1,3 +1,7 @@
+#![feature(attr_literals)]
+#![feature(custom_derive)]
+#![feature(proc_macro)]
+
 #![allow(unknown_lints)] // for clippy
 #![warn(fat_ptr_transmutes)]
 #![warn(missing_copy_implementations)]
@@ -16,30 +20,16 @@ extern crate ipfs_client;
 extern crate tokio_core;
 extern crate mhash;
 extern crate maddr;
+extern crate stomp;
+#[macro_use]
+extern crate stomp_macros;
 
 mod util;
 mod context;
 mod subcommands;
 
-use clap::{ App, AppSettings };
-
-use context::Context;
+use stomp::ParseApp;
 
 fn main() {
-    let matches = App::new("IPFS Daemon CLI")
-        .author(crate_authors!())
-        .version(crate_version!())
-        .settings(&[
-            AppSettings::ArgRequiredElseHelp,
-            AppSettings::VersionlessSubcommands,
-        ])
-        .global_settings(&[
-            AppSettings::ColoredHelp,
-            AppSettings::DeriveDisplayOrder,
-        ])
-        .subcommands(subcommands::subcommands())
-        .args(&*Context::args())
-        .get_matches();
-
-    subcommands::run(&mut Context::new(&matches), matches);
+    subcommands::App::parse().run();
 }

@@ -10,3 +10,5 @@ ipfs-client = { git = "https://github.com/mycorrhiza/ipfs-client-rs" }
 maddr = "0.2.0"
 mhash = "0.2.0"
 tokio-core = "0.1.0"
+stomp = { git = "https://github.com/Nemo157/stomp-rs" }
+stomp-macros = { git = "https://github.com/Nemo157/stomp-rs" }

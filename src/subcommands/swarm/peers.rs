@@ -1,18 +1,18 @@
-use clap::{ App, SubCommand, ArgMatches };
-
 use context::Context;
 
-pub fn subcommand() -> App<'static, 'static> {
-    SubCommand::with_name("peers")
-        .about("List the set of peers this node is connected to")
+/// List the set of peers this node is connected to
+#[derive(StompCommand)]
+pub struct Peers {
 }
 
-pub fn run(context: &mut Context, _: &ArgMatches) {
-    let peers = context.event_loop
-        .run(context.client.swarm().peers())
-        .expect("TODO: not crash here");
+impl Peers {
+    pub fn run(self, mut context: Context) {
+        let peers = context.event_loop
+            .run(context.client.swarm().peers())
+            .expect("TODO: not crash here");
 
-    for addr in peers.addresses {
-        println!("{}", addr);
+        for addr in peers.addresses {
+            println!("{}", addr);
+        }
     }
 }

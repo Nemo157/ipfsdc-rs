@@ -1,24 +1,41 @@
+use maddr::MultiAddr;
+
+use context::Context;
+
 mod info;
 mod version;
 mod swarm;
 
-use clap::{ App, ArgMatches };
-
-use context::Context;
-
-pub fn subcommands() -> Vec<App<'static, 'static>> {
-    vec![
-        info::subcommand(),
-        version::subcommand(),
-        swarm::subcommand(),
-    ]
+#[derive(StompCommand)]
+#[stomp(crate_authors, crate_version)]
+#[stomp(name = "IPFS Daemon CLI")]
+#[stomp(global_settings(ColoredHelp, DeriveDisplayOrder, VersionlessSubcommands))]
+pub struct App {
+    #[stomp(default_value = "/ip4/127.0.0.1/tcp/5001/https")]
+    api: MultiAddr,
+    #[stomp(subcommand)]
+    subcommand: Commands,
 }
 
-pub fn run(context: &mut Context, matches: ArgMatches) {
-    match matches.subcommand() {
-        ("info", Some(matches)) => info::run(context, matches),
-        ("version", Some(matches)) => version::run(context, matches),
-        ("swarm", Some(matches)) => swarm::run(context, matches),
-        _ => unreachable!(),
+#[derive(StompCommands)]
+pub enum Commands {
+    Info(info::Info),
+    Version(version::Version),
+    Swarm(swarm::Swarm),
+}
+
+impl App {
+    pub fn run(self) {
+        self.subcommand.run(Context::new(self.api))
+    }
+}
+
+impl Commands {
+    fn run(self, context: Context) {
+        match self {
+            Commands::Info(info) => info.run(context),
+            Commands::Version(version) => version.run(context),
+            Commands::Swarm(swarm) => swarm.run(context),
+        }
     }
 }

@@ -1,36 +1,29 @@
 use std::cmp;
-use std::str::FromStr;
 
-use clap::{ App, Arg, SubCommand, ArgMatches };
 use ipfs_client::data::PeerInfo;
 use mhash::MultiHash;
 
 use context::Context;
-use util;
 
-pub fn subcommand() -> App<'static, 'static> {
-    SubCommand::with_name("info")
-        .visible_alias("id")
-        .about("Show ipfs peer info.")
-        .after_help("\
-            Prints out information about the specified peer(s).\n\
-            If no peers are specified prints out information about the local peer.\
-        ")
-        .args(&[
-            Arg::with_name("peerid")
-                .takes_value(true)
-                .help("Id of peer to lookup")
-                .validator(util::multihash_validator),
-        ])
+/// Show ipfs peer info
+///
+/// Prints out information about the specified peer(s).
+/// If no peers are specified prints out information about the local peer.
+#[derive(StompCommand)]
+#[stomp(alias = "id")]
+pub struct Info {
+    /// Id of peer to lookup
+    peerid: Option<MultiHash>,
 }
 
-pub fn run(context: &mut Context, matches: &ArgMatches) {
-    let future = matches.value_of("peerid")
-        .map(|s| MultiHash::from_str(s).expect("impossible: validated in arg"))
-        .map(|id| context.client.peer_info(&id))
-        .unwrap_or_else(|| context.client.local_info());
+impl Info {
+    pub fn run(self, mut context: Context) {
+        let future = self.peerid
+            .map(|id| context.client.peer_info(&id))
+            .unwrap_or_else(|| context.client.local_info());
 
-    print(context.event_loop.run(future).expect("TODO: not crash here"));
+        print(context.event_loop.run(future).expect("TODO: not crash here"));
+    }
 }
 
 fn print(info: PeerInfo) {

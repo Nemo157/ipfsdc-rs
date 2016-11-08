@@ -7,6 +7,8 @@ dependencies = [
  "ipfs-client 0.1.0 (git+https://github.com/mycorrhiza/ipfs-client-rs)",
  "maddr 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "mhash 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stomp 0.1.0 (git+https://github.com/Nemo157/stomp-rs)",
+ "stomp-macros 0.1.0 (git+https://github.com/Nemo157/stomp-rs)",
  "tokio-core 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -408,6 +410,23 @@ version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "stomp"
+version = "0.1.0"
+source = "git+https://github.com/Nemo157/stomp-rs#d520268ac014b0374ce2ce2a49778f5ab9b2b287"
+dependencies = [
+ "clap 2.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "stomp-macros"
+version = "0.1.0"
+source = "git+https://github.com/Nemo157/stomp-rs#d520268ac014b0374ce2ce2a49778f5ab9b2b287"
+dependencies = [
+ "quote 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "strsim"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -415,6 +434,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "syn"
 version = "0.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "quote 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicode-xid 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "syn"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "quote 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -575,7 +603,10 @@ dependencies = [
 "checksum serde_json 0.8.3 (registry+https://github.com/rust-lang/crates.io-index)" = "1cb6b19e74d9f65b9d03343730b643d729a446b29376785cd65efdff4675e2fc"
 "checksum slab 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "17b4fcaed89ab08ef143da37bc52adbcc04d4a69014f4c1208d6b51f0c47bc23"
 "checksum smallvec 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4c8cbcd6df1e117c2210e13ab5109635ad68a929fcbb8964dc965b76cb5ee013"
+"checksum stomp 0.1.0 (git+https://github.com/Nemo157/stomp-rs)" = "<none>"
+"checksum stomp-macros 0.1.0 (git+https://github.com/Nemo157/stomp-rs)" = "<none>"
 "checksum strsim 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "50c069df92e4b01425a8bf3576d5d417943a6a7272fbabaf5bd80b1aaa76442e"
+"checksum syn 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d134990c61f6cae717293c32e0ba31daf32df876774281ab73ef4a9a200d25b0"
 "checksum syn 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)" = "76c2db66dc579998854d84ff0ff4a81cb73e69596764d144ce7cece4d04ce6b5"
 "checksum tempdir 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "87974a6f5c1dfb344d733055601650059a3363de2a6104819293baff662132d6"
 "checksum term_size 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "3f7f5f3f71b0040cecc71af239414c23fd3c73570f5ff54cf50e03cef637f2a0"

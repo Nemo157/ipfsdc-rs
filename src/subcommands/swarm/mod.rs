@@ -1,35 +1,41 @@
+use context::Context;
+
 mod peers;
 mod addrs;
 mod connect;
 mod disconnect;
 
-use clap::{ App, AppSettings, SubCommand, ArgMatches };
-
-use context::Context;
-
-pub fn subcommand() -> App<'static, 'static> {
-    SubCommand::with_name("swarm")
-        .about("\
-            Manipulate the network swarm.\n\
-            \n\
-            The swarm is the component that opens, listens for, and \
-            maintains connections to other ipfs peers in the internet.\
-        ")
-        .setting(AppSettings::ArgRequiredElseHelp)
-        .subcommands(vec![
-            peers::subcommand(),
-            addrs::subcommand(),
-            connect::subcommand(),
-            disconnect::subcommand(),
-        ])
+/// Manipulate the network swarm.
+///
+/// The swarm is the component that opens, listens for, and maintains
+/// connections to other ipfs peers in the internet
+#[derive(StompCommand)]
+pub struct Swarm {
+    #[stomp(subcommand)]
+    subcommand: Commands,
 }
 
-pub fn run(context: &mut Context, matches: &ArgMatches) {
-    match matches.subcommand() {
-        ("peers", Some(matches)) => peers::run(context, matches),
-        ("addrs", Some(matches)) => addrs::run(context, matches),
-        ("connect", Some(matches)) => connect::run(context, matches),
-        ("disconnect", Some(matches)) => disconnect::run(context, matches),
-        _ => unreachable!(),
+#[derive(StompCommands)]
+enum Commands {
+    Peers(peers::Peers),
+    Addrs(addrs::Addrs),
+    Connect(connect::Connect),
+    Disconnect(disconnect::Disconnect),
+}
+
+impl Swarm {
+    pub fn run(self, context: Context) {
+        self.subcommand.run(context)
+    }
+}
+
+impl Commands {
+    fn run(self, context: Context) {
+        match self {
+            Commands::Peers(peers) => peers.run(context),
+            Commands::Addrs(addrs) => addrs.run(context),
+            Commands::Connect(connect) => connect.run(context),
+            Commands::Disconnect(disconnect) => disconnect.run(context),
+        }
     }
 }

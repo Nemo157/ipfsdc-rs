@@ -1,35 +1,43 @@
-mod local;
-
-use clap::{ App, SubCommand, ArgMatches };
-
 use context::Context;
 
-pub fn subcommand() -> App<'static, 'static> {
-    SubCommand::with_name("addrs")
-        .about("List known addresses")
-        .subcommands(vec![
-            local::subcommand(),
-        ])
+mod local;
+
+/// List known addresses
+#[derive(StompCommand)]
+pub struct Addrs {
+    #[stomp(subcommand)]
+    subcommand: Option<Commands>
 }
 
-pub fn run(context: &mut Context, matches: &ArgMatches) {
-    match matches.subcommand() {
-        ("local", Some(matches)) => local::run(context, matches),
-        (_, None) => run_self(context, matches),
-        _ => unreachable!(),
+#[derive(StompCommands)]
+enum Commands {
+    Local(local::Local),
+}
+
+impl Addrs {
+    pub fn run(self, mut context: Context) {
+        if let Some(subcommand) = self.subcommand {
+            return subcommand.run(context);
+        }
+
+        let peers = context.event_loop
+            .run(context.client.swarm().addresses())
+            .expect("TODO: not crash here")
+            .peers;
+
+        for (peer, addrs) in peers {
+            println!("{} ({}):", peer, addrs.len());
+            for addr in addrs {
+                println!("        {}", addr);
+            }
+        }
     }
 }
 
-fn run_self(context: &mut Context, _: &ArgMatches) {
-    let peers = context.event_loop
-        .run(context.client.swarm().addresses())
-        .expect("TODO: not crash here")
-        .peers;
-
-    for (peer, addrs) in peers {
-        println!("{} ({}):", peer, addrs.len());
-        for addr in addrs {
-            println!("        {}", addr);
+impl Commands {
+    fn run(self, context: Context) {
+        match self {
+            Commands::Local(local) => local.run(context),
         }
     }
 }
